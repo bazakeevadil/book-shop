@@ -12,9 +12,12 @@
 
   <ItemGroup>
     <Folder Include="Admin\Commands\" />
-    <Folder Include="Shared\" />
+    <Folder Include="Books\Command\" />
     <Folder Include="Users\Command\" />
-    <Folder Include="Users\Dtos\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.1.1" />
   </ItemGroup>
 
 </Project>
