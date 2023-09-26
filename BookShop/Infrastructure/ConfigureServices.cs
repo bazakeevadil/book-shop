@@ -15,17 +15,7 @@ public static class ConfigureServices
     {
         services.AddDbContext<AppDbContext>(opts =>
             opts.UseSqlServer(
-                configuration.GetConnectionString("Default")));
-
-        services.AddIdentityCore<IdentityUser>(opts =>
-        {
-            opts.User.RequireUniqueEmail = true;
-            opts.SignIn.RequireConfirmedEmail = false;
-            opts.SignIn.RequireConfirmedAccount = false;
-            opts.SignIn.RequireConfirmedPhoneNumber = false;
-        })
-        .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<AppDbContext>();
+                configuration.GetConnectionString("SqlConnection")));
 
         services.AddTransient<IUnitOfWork, UnitOfWork>();
 
