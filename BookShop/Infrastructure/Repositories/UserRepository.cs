@@ -1,47 +1,76 @@
 ﻿using Domain.Entities;
 using Domain.Repositories;
+using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Infrastructure.Repositories;
 
 public class UserRepository : IUserRepository
 {
-    public Task<User?> CheckUserCredentials(string username, string password)
+    private readonly AppDbContext _context;
+
+    public UserRepository(AppDbContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
     }
 
-    public Task CreateAsync(User entity)
+    public async Task<User?> CheckUserCredentials(string username, string password)
     {
-        throw new NotImplementedException();
+        var user = await _context.Users.SingleOrDefaultAsync(u => u.Username == username).ConfigureAwait(false);
+        if (user is null || await HashPasswordAsync(password).ConfigureAwait(false) != user.HashPassword)
+            return null;
+        return user;
     }
 
-    public Task<bool> DeleteAsync(params string[] names)
+    public async Task CreateAsync(User entity)
     {
-        throw new NotImplementedException();
+        await _context.Users.AddAsync(entity).ConfigureAwait(false);
     }
 
-    public Task<bool> DeleteAsync(params Guid[] Id)
+    public async Task<bool> DeleteAsync(params string[] names)
     {
-        throw new NotImplementedException();
+        var book = await _context.Users.Where(b => names.Contains(b.Username)).ToListAsync().ConfigureAwait(false);
+        if (book.Any())
+        {
+            _context.Users.RemoveRange(book);
+            return true;
+        }
+        return false;
+    }
+
+    public async Task<bool> DeleteAsync(params Guid[] Id)
+    {
+        var book = await _context.Users.Where(b => Id.Contains(b.Id)).ToListAsync().ConfigureAwait(false);
+        if (book.Any())
+        {
+            _context.Users.RemoveRange(book);
+            return true;
+        }
+        return false;
     }
 
     public Task<List<User>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return _context.Users.AsNoTracking().ToListAsync();
     }
 
-    public Task<User?> GetUserByName(string username)
+    public async Task<User?> GetUserByName(string username)
     {
-        throw new NotImplementedException();
+        var book = await _context.Users.FirstOrDefaultAsync(b => b.Username == username);
+        return book ?? default;
     }
 
-    public Task<string> HashPasswordAsync(string password)
+    public async Task<string> HashPasswordAsync(string password)
     {
-        throw new NotImplementedException();
+        var hashedBytes = SHA256.HashData(Encoding.UTF8.GetBytes(password));
+        var hash = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+        return await Task.FromResult(hash).ConfigureAwait(false);
     }
 
     public void Update(User entity)
     {
-        throw new NotImplementedException();
+        _context.Users.Update(entity);
     }
 }

@@ -1,37 +1,59 @@
 ﻿using Domain.Entities;
 using Domain.Repositories;
+using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
 public class BookRepository : IBookRepository
 {
-    public Task CreateAsync(Book entity)
+    private readonly AppDbContext _context;
+
+    public BookRepository(AppDbContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
     }
 
-    public Task<bool> DeleteAsync(params string[] names)
+    public async Task CreateAsync(Book entity)
     {
-        throw new NotImplementedException();
+        await _context.Books.AddAsync(entity).ConfigureAwait(false);
     }
 
-    public Task<bool> DeleteAsync(params Guid[] Id)
+    public async Task<bool> DeleteAsync(params string[] names)
     {
-        throw new NotImplementedException();
+        var book = await _context.Books.Where(b => names.Contains(b.Title)).ToListAsync().ConfigureAwait(false);
+        if (book.Any())
+        {
+            _context.Books.RemoveRange(book);
+            return true;
+        }
+        return false;
+    }
+
+    public async Task<bool> DeleteAsync(params Guid[] Id)
+    {
+        var book = await _context.Books.Where(b => Id.Contains(b.Id)).ToListAsync().ConfigureAwait(false);
+        if (book.Any())
+        {
+            _context.Books.RemoveRange(book);
+            return true;
+        }
+        return false;
     }
 
     public Task<List<Book>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return _context.Books.AsNoTracking().ToListAsync();
     }
 
-    public Task<Book?> GetByTitle(string title)
+    public async Task<Book?> GetByTitle(string title)
     {
-        throw new NotImplementedException();
+        var book = await _context.Books.FirstOrDefaultAsync(b => b.Title == title);
+        return book ?? default;
     }
 
     public void Update(Book entity)
     {
-        throw new NotImplementedException();
+        _context.Books.Update(entity);
     }
 }

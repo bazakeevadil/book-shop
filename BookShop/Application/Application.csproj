@@ -16,7 +16,6 @@
     <Folder Include="Books\Requests\" />
     <Folder Include="Users\Commands\" />
     <Folder Include="Users\Requests\" />
-    <Folder Include="Contract\" />
   </ItemGroup>
 
   <ItemGroup>
