@@ -56,7 +56,7 @@ public class UserRepository : IUserRepository
         return _context.Users.AsNoTracking().ToListAsync();
     }
 
-    public async Task<User?> GetUserByName(string username)
+    public async Task<User?> GetUserById(string username)
     {
         var book = await _context.Users.FirstOrDefaultAsync(b => b.Username == username);
         return book ?? default;

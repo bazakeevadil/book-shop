@@ -9,5 +9,5 @@ public record OrderDto
     public required decimal TotalPrice { get; init; }
     public required OrderStatus OrderStatus { get; init; }
 
-    public required UserDto UserDto { get; init; }
+    public UserDto UserDto { get; init; }
 }

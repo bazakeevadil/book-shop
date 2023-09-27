@@ -46,10 +46,14 @@ public class BookRepository : IBookRepository
         return _context.Books.AsNoTracking().ToListAsync();
     }
 
-    public async Task<Book?> GetByTitle(string title)
+    public Task<Book?> GetById(Guid id)
     {
-        var book = await _context.Books.FirstOrDefaultAsync(b => b.Title == title);
-        return book ?? default;
+        return _context.Books.FirstOrDefaultAsync(b => b.Id == id);
+    }
+
+    public Task<Book?> GetByTitle(string title)
+    {
+        return _context.Books.FirstOrDefaultAsync(b => b.Title == title);
     }
 
     public void Update(Book entity)

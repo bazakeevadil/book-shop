@@ -1,0 +1,55 @@
+﻿using Application.Contract;
+using Application.Shared;
+using Domain.Entities;
+using Domain.Enums;
+using Domain.Repositories;
+using MediatR;
+
+
+namespace Application.Users.Commands;
+
+public record CreateUserCommand : IRequest<UserDto>
+{
+    public required string Username { get; init; }
+
+    public required string Password { get; init; }
+
+    public required Role Role { get; init; }
+}
+
+internal class CreateUserHandler : IRequestHandler<CreateUserCommand, UserDto>
+{
+    private readonly IUserRepository _userRepository;
+    private readonly IUnitOfWork _unitOfWork;
+
+    public CreateUserHandler(IUserRepository userRepository, IUnitOfWork unitOfWork)
+    {
+        _userRepository = userRepository;
+        _unitOfWork = unitOfWork;
+    }
+
+    public async Task<UserDto> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+    {
+        var user = new User
+        {
+            Username = request.Username,
+            Password = request.Password,
+            HashPassword = request.Password,
+            Role = request.Role,
+            Basket = new(),
+        };
+
+        await _userRepository.CreateAsync(user).ConfigureAwait(false);
+        await _unitOfWork.CommitAsync().ConfigureAwait(false);
+
+        var response = new UserDto
+        {
+            Id = user.Id,
+            Username = user.Username,
+            Password = user.Password,
+            HashPassword = user.HashPassword,
+            Role = user.Role,
+        };
+        return response;
+    }
+}
