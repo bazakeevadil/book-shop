@@ -10,22 +10,23 @@ public class AppDbContext : DbContext
 
     public DbSet<User> Users => Set<User>();
     public DbSet<Book> Books => Set<Book>();
-    public DbSet<Author> Author => Set<Author>();
+    public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
+    public DbSet<Order> Orders => Set<Order>();
     public DbSet<Basket> Baskets => Set<Basket>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Book>()
-            .HasIndex(b => b.Title)
-            .IsUnique();
-        modelBuilder.Entity<Author>()
-            .HasIndex(a => a.Fullname)
-            .IsUnique();
+        var book = modelBuilder.Entity<Book>();
+        book.HasIndex(b => b.Title).IsUnique();
+        book.Property(b => b.Title).UseCollation("SQL_Latin1_General_CP1_CI_AS");
+           
         modelBuilder.Entity<User>()
             .HasIndex(u => u.Username)
             .IsUnique();
         modelBuilder.Entity<User>().Navigation(u => u.Basket).AutoInclude();
         modelBuilder.Entity<Basket>().Navigation(b => b.Books).AutoInclude();
-        modelBuilder.Entity<Author>().Navigation(b => b.Books).AutoInclude();
+        modelBuilder.Entity<UserProfile>().Navigation(b => b.User).AutoInclude();
+        modelBuilder.Entity<Order>().Navigation(b => b.User).AutoInclude();
+
     }
 }
