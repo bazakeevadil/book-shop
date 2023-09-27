@@ -11,9 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Admin\Commands\" />
-    <Folder Include="Books\Command\" />
-    <Folder Include="Users\Command\" />
+    <Folder Include="Baskets\Commands\" />
+    <Folder Include="Baskets\Requests\" />
+    <Folder Include="Books\Requests\" />
+    <Folder Include="Users\Commands\" />
+    <Folder Include="Users\Requests\" />
+    <Folder Include="Contract\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,7 @@
 ﻿using Application.Shared;
+using Domain.Repositories;
 using Infrastructure.Data;
-using Microsoft.AspNetCore.Identity;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,8 @@ public static class ConfigureServices
                 configuration.GetConnectionString("SqlConnection")));
 
         services.AddTransient<IUnitOfWork, UnitOfWork>();
+        services.AddTransient<IUserRepository, UserRepository>();
+        services.AddTransient<IBookRepository, BookRepository>();
 
         return services;
     }
