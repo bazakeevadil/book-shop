@@ -13,12 +13,12 @@
   <ItemGroup>
     <Folder Include="Baskets\Commands\" />
     <Folder Include="Baskets\Requests\" />
-    <Folder Include="Books\Requests\" />
     <Folder Include="Users\Commands\" />
     <Folder Include="Users\Requests\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="MediatR" Version="12.1.1" />
   </ItemGroup>
 

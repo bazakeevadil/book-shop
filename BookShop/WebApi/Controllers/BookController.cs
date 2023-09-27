@@ -1,24 +1,49 @@
-﻿namespace WebApi.Controllers;
+﻿using Application.Books.Commands;
+using Application.Books.Requests;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
-public class ErrorHandlingMiddleware : IMiddleware
+namespace WebApi.Controllers;
+[AllowAnonymous]
+[ApiController, Route("api/books")]
+public class BookController : ControllerBase
 {
-    private readonly ILogger<ErrorHandlingMiddleware> _logger;
+    private readonly IMediator _mediator;
 
-    public ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger)
+    public BookController(IMediator mediator)
     {
-        _logger = logger;
+        _mediator = mediator;
     }
 
-    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+    [HttpGet("getall")]
+    public async Task<IActionResult> GetAll()
     {
-        try
-        {
-            await next(context);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogInformation("Ошибка {ex}", ex);
-            context.Response.StatusCode = StatusCodes.Status400BadRequest;
-        }
+        var request = new GetAllBooksQuery();
+        var books = await _mediator.Send(request);
+        if (books is null) return Ok("The list is empty");
+        return Ok(books);
     }
+
+    [HttpPost("create")]
+    public async Task<IActionResult> CreateBookAsync(AddBookCommand command)
+    {
+        if (command.Title.IsNullOrEmpty()) return BadRequest("Title is null");
+        if (command.Price < 0)
+            return BadRequest($"Price cannot be negative {command.Price}");
+
+        var response = await _mediator.Send(command);
+        return Ok(response);
+    }
+    [HttpDelete("delete")]
+    public async Task<IActionResult> Delete(DeleteBookByIdCommand command)
+    {
+        var result = await _mediator.Send(command);
+        if (result == true)
+            return Ok("Book deleted.");
+        return NotFound();
+    }
+
+
 }

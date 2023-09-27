@@ -16,13 +16,18 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        var userprop = modelBuilder.Entity<UserProfile>();
+        userprop.ToTable("UserProfiles");
+        userprop.HasKey(up => up.UserId);
+
         var book = modelBuilder.Entity<Book>();
         book.HasIndex(b => b.Title).IsUnique();
         book.Property(b => b.Title).UseCollation("SQL_Latin1_General_CP1_CI_AS");
-           
-        modelBuilder.Entity<User>()
-            .HasIndex(u => u.Username)
-            .IsUnique();
+
+        var user = modelBuilder.Entity<User>();
+        user.HasIndex(u => u.Username).IsUnique();
+        user.Property(u => u.Username).UseCollation("SQL_Latin1_General_CP1_CI_AS");
+        
         modelBuilder.Entity<User>().Navigation(u => u.Basket).AutoInclude();
         modelBuilder.Entity<Basket>().Navigation(b => b.Books).AutoInclude();
         modelBuilder.Entity<UserProfile>().Navigation(b => b.User).AutoInclude();

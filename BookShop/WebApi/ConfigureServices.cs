@@ -45,7 +45,7 @@ public static class ConfigureServices
         {
             c.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "JWTToken_Auth_API",
+                Title = "Book-Store Api",
                 Version = "v1"
             });
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()

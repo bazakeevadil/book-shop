@@ -1,11 +1,10 @@
 using Application;
 using Infrastructure;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.OpenApi.Models;
 using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using WebApi;
-using WebApi.Controllers;
+using WebApi.Middlewere;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,7 +40,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
-        options.DocumentTitle = "Rolls-Royce API Documentation";
+        options.DocumentTitle = "Book-Store Api";
     });
 }
 
