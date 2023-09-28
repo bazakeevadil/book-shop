@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Annotations;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace WebApi.Controllers
@@ -51,11 +52,11 @@ namespace WebApi.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("Add")]
+        [HttpPost("AddToOwn")]
         [SwaggerOperation("Добавление для пользователя", "Этом опирациее может воспользоваца пользователь")]
         [SwaggerResponse(200, "Успешно добавлен")]
         [SwaggerResponse(400, "Ошибка валидации")]
-        public async Task<IActionResult> Add(string title)
+        public async Task<IActionResult> AddToOwn(string title)
         {
             if (title.IsNullOrEmpty()) return BadRequest("Title is null");
 
@@ -107,7 +108,7 @@ namespace WebApi.Controllers
         [SwaggerOperation("Удаление для пользователя", "Этом опирациее может воспользоваца пользователь")]
         [SwaggerResponse(200, "Успешно удален")]
         [SwaggerResponse(400, "Ошибка валидации")]
-        public async Task<IActionResult> Delete(string[] title)
+        public async Task<IActionResult> Delete(string title)
         {
             var username = HttpContext.User.FindFirstValue(ClaimTypes.Name) ?? string.Empty;
             if (username is null)
@@ -124,17 +125,17 @@ namespace WebApi.Controllers
             return NotFound();
         }
 
-        [AllowAnonymous]
         [HttpPost("Check")]
         [SwaggerOperation("Просмотр корзины", "Метод для просмотра всех заказов пользователя")]
         [SwaggerResponse(200, "Успешно найдено")]
         [SwaggerResponse(400, "Ошибка валидации")]
-        public async Task<IActionResult> Check(string adress)
+        public async Task<IActionResult> Check([Required] string address)
         {
             var username = HttpContext.User.FindFirstValue(ClaimTypes.Name);
             var query = new CreateOrderCommand
             {
-                Username = username,
+                Username = username ?? string.Empty,
+                Address = address,
             };
             var response = await _mediator.Send(query);
             return Ok(response);

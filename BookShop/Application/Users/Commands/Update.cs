@@ -28,7 +28,7 @@ internal class UpdateUserHandler : IRequestHandler<UpdateUserCommand, UserDto?>
 
     public async Task<UserDto?> Handle(UpdateUserCommand command, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetUserById(command.Username).ConfigureAwait(false);
+        var user = await _userRepository.GetUserByUsername(command.Username).ConfigureAwait(false);
         if (user is not null)
         {
             user.Username ??= command.Username;
@@ -42,8 +42,6 @@ internal class UpdateUserHandler : IRequestHandler<UpdateUserCommand, UserDto?>
             {
                 Id = user.Id,
                 Username = user.Username,
-                Password = user.Password,
-                HashPassword = user.HashPassword,
                 Role = user.Role,
             };
             return response;

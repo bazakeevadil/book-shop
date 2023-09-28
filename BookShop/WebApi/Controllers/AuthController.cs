@@ -38,16 +38,14 @@ public class AuthController : ControllerBase
     [SwaggerResponse(400, "Ошибка валидации")]
     public async Task<IActionResult> Register(CreateUserCommand command)
     {
-        var user = _mediator.Send(command.Username);
-        if (user is not null)
-            return Ok(user);
-
         if (command.Username.IsNullOrEmpty()) return BadRequest("Username is null");
         if (command.Password.IsNullOrEmpty()) return BadRequest("Password is null");
 
         if (((int)command.Role) < 1 || ((int)command.Role) > 2)
             return BadRequest("Not the correct role");
+
         var response = await _mediator.Send(command);
+
         return Ok(response);
     }
 }

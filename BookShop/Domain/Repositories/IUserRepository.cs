@@ -5,7 +5,8 @@ namespace Domain.Repositories;
 
 public interface IUserRepository : IRepository<User>
 {
-    Task<User?> GetUserById(string username);
+    Task<User?> GetUserById(Guid id);
+    Task<User?> GetUserByUsername(string username);
     Task<string> HashPasswordAsync(string password);
     Task<User?> CheckUserCredentials(string username, string password);
 }

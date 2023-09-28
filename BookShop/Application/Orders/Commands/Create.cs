@@ -10,6 +10,7 @@ namespace Application.Orders.Commands;
 public record CreateOrderCommand : IRequest<OrderDto>
 {
     public required string Username { get; init; }
+    public required string Address { get; init; }
 }
 
 internal class CreateOrderHandler : IRequestHandler<CreateOrderCommand, OrderDto>
@@ -27,7 +28,7 @@ internal class CreateOrderHandler : IRequestHandler<CreateOrderCommand, OrderDto
 
     public async Task<OrderDto> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetUserById(request.Username);
+        var user = await _userRepository.GetUserByUsername(request.Username);
         if (user is null) throw new ArgumentNullException(nameof(user));
 
         var books = user.Basket.Books.ToList();
@@ -38,9 +39,11 @@ internal class CreateOrderHandler : IRequestHandler<CreateOrderCommand, OrderDto
         var order = new Order
         {
             UserId = user.Id,
+            Address = request.Address,
             TotalPrice = price,
-            OrderStatus = OrderStatus.Delivered,
+            OrderStatus = OrderStatus.Ordered,
             User = user,
+            Books = books,
         };
 
         var orderDto = new OrderDto

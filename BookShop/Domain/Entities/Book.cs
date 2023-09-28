@@ -18,4 +18,6 @@ public class Book
     public required string Author { get; set; }
     public required long Quantity { get; set; }
     public decimal Price { get; set; }
+
+    public List<Order> Orders { get; set; } = new();
 }

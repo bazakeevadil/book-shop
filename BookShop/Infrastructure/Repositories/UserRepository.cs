@@ -31,10 +31,10 @@ public class UserRepository : IUserRepository
 
     public async Task<bool> DeleteAsync(params string[] names)
     {
-        var book = await _context.Users.Where(b => names.Contains(b.Username)).ToListAsync().ConfigureAwait(false);
-        if (book.Any())
+        var user = await _context.Users.Where(b => names.Contains(b.Username)).ToListAsync().ConfigureAwait(false);
+        if (user.Any())
         {
-            _context.Users.RemoveRange(book);
+            _context.Users.RemoveRange(user);
             return true;
         }
         return false;
@@ -42,10 +42,10 @@ public class UserRepository : IUserRepository
 
     public async Task<bool> DeleteAsync(params Guid[] Id)
     {
-        var book = await _context.Users.Where(b => Id.Contains(b.Id)).ToListAsync().ConfigureAwait(false);
-        if (book.Any())
+        var user = await _context.Users.Where(b => Id.Contains(b.Id)).ToListAsync().ConfigureAwait(false);
+        if (user.Any())
         {
-            _context.Users.RemoveRange(book);
+            _context.Users.RemoveRange(user);
             return true;
         }
         return false;
@@ -56,10 +56,16 @@ public class UserRepository : IUserRepository
         return _context.Users.AsNoTracking().ToListAsync();
     }
 
-    public async Task<User?> GetUserById(string username)
+    public async Task<User?> GetUserById(Guid id)
     {
-        var book = await _context.Users.FirstOrDefaultAsync(b => b.Username == username);
-        return book ?? default;
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        return user ?? default;
+    }
+
+    public async Task<User?> GetUserByUsername(string username)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+        return user ?? default;
     }
 
     public async Task<string> HashPasswordAsync(string password)

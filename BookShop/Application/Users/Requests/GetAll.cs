@@ -25,8 +25,6 @@ internal class GetAllUsersHandler : IRequestHandler<GetAllUsersQuery, IEnumerabl
             {
                 Id = user.Id,
                 Username = user.Username,
-                Password = user.Password,
-                HashPassword = user.HashPassword,
                 Role = user.Role,
             };
             response.Add(result);

@@ -33,8 +33,7 @@ internal class CreateUserHandler : IRequestHandler<CreateUserCommand, UserDto>
         var user = new User
         {
             Username = request.Username,
-            Password = request.Password,
-            HashPassword = request.Password,
+            HashPassword = await _userRepository.HashPasswordAsync(request.Password),
             Role = request.Role,
             Basket = new(),
         };
@@ -46,10 +45,9 @@ internal class CreateUserHandler : IRequestHandler<CreateUserCommand, UserDto>
         {
             Id = user.Id,
             Username = user.Username,
-            Password = user.Password,
-            HashPassword = user.HashPassword,
             Role = user.Role,
         };
+
         return response;
     }
 }

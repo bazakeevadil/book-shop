@@ -8,6 +8,4 @@ public record OrderDto
     public required Guid UserId { get; init; }
     public required decimal TotalPrice { get; init; }
     public required OrderStatus OrderStatus { get; init; }
-
-    public UserDto UserDto { get; init; }
 }

@@ -26,7 +26,7 @@ internal class AddBookToBasketHandler : IRequestHandler<AddBookToBasketCommand, 
 
     public async Task<bool> Handle(AddBookToBasketCommand command, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetUserById(command.Username).ConfigureAwait(false);
+        var user = await _userRepository.GetUserByUsername(command.Username).ConfigureAwait(false);
         var book = await _bookRepository.GetByTitle(command.Title).ConfigureAwait(false);
 
         if (user is not null && book is not null)

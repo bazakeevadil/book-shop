@@ -26,7 +26,7 @@ internal class GetUserByNameHandler : IRequestHandler<GetUserByNameQuery, GetUse
 
     public async Task<GetUserResponse?> Handle(GetUserByNameQuery request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetUserById(request.Username).ConfigureAwait(false);
+        var user = await _userRepository.GetUserByUsername(request.Username).ConfigureAwait(false);
         if (user is not null)
         {
             var response = new GetUserResponse

@@ -6,7 +6,7 @@ namespace Application.Baskets.Commands;
 
 public record DeleteBooksByTitleFromBasketCommand : IRequest<bool>
 {
-    public required string[] Title { get; init; }
+    public required string Title { get; init; }
 
     public required string Username { get; init; }
 }
@@ -26,12 +26,12 @@ internal class DeleteBooksFromBasket : IRequestHandler<DeleteBooksByTitleFromBas
 
     public async Task<bool> Handle(DeleteBooksByTitleFromBasketCommand command, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetUserById(command.Username).ConfigureAwait(false);
-        var books = await _bookRepository.GetByTitle(command.Title).ConfigureAwait(false);
+        var user = await _userRepository.GetUserByUsername(command.Username).ConfigureAwait(false);
+        var book = await _bookRepository.GetByTitle(command.Title).ConfigureAwait(false);
 
-        if (user != null && books != null)
+        if (user != null && book != null)
         {
-            user.Basket.Books.RemoveAll(book => books.Contains(book));
+            user.Basket.Books.RemoveAll(b => b.Title == book.Title);
             await _unitOfWork.CommitAsync().ConfigureAwait(false);
             return true;
         }

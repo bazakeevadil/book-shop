@@ -39,7 +39,7 @@ internal class LoginHandler : IRequestHandler<LoginQuery, string>
             var tokenString = GetTokenString(claims, DateTime.UtcNow.AddMinutes(30));
             return tokenString;
         }
-        return "User not found";
+        return "User not found or password is incorrect.";
     }
 
     private string GetTokenString(List<Claim> claims, DateTime exp)
